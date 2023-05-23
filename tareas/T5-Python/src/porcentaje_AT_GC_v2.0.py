@@ -17,21 +17,17 @@ CATEGORY
 
 USAGE
 
-    % python porcentaje_AT_GC_v2.0.py
+    % python porcentaje_AT_GC_v2.0.py filename [-r] value
 
     El programa recibirá:
 
-      a) La ruta donde se encuentra el archivo.
+      a) El nombre del archivo con la secuencia de DNA - incluye el path
 
-      b) El nombre del archivo con la secuencia de DNA.
-
-      c) El número de decimales para la respuesta.
+      b) El número de decimales para el % de atg.
     
 ARGUMENTS
 
-path: La ruta donde se encuentra el archivo.
-
-name: El nombre del archivo con la secuencia de DNA.
+filename: El nombre del archivo con la secuencia de DNA.
 
 -r: El número de decimales para redondear la respuesta (Opcional).
 
@@ -61,16 +57,13 @@ class AmbiguousBaseError(Exception):
     pass
 
 # Iniciar el parseador 
-description = 'El programa calcula el porcentaje de AT de secuencia de DNA proveniente de un archivo.'
+description = 'Calcula el porcentaje de AT de una secuencia de DNA.'
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument('path',
+parser.add_argument('filename',
                     type=str,
-                    help='La ruta a la ubicación del archivo con la secuencia de DNA.')
-parser.add_argument('name',
-                    type=str,
-                    help='El nombre del archivo con la secuencia de DNA')
-parser.add_argument('-r', 
-                    type=int, help='El número de decimales para la respuesta', 
+                    help='Archivo con la secuencia de DNA -incluir path')
+parser.add_argument('-r', '--round',
+                    type=int, help='El número de decimales para el % de at', 
                     required=False,
                     default=2)
 
@@ -79,7 +72,7 @@ args = parser.parse_args()
 
 # Abrir archivo
 try:
-    file = open(args.path + args.name)
+    file = open(args.filename)
     dna_sequence = file.read().rstrip('\n').upper()
     dna_sequence = dna_sequence.split('\n')
     dna_sequence = ''.join(dna_sequence)
@@ -98,4 +91,4 @@ except ValueError:
 except AmbiguousBaseError:
     print('El archivo contiene bases ambigüas.')
 else:
-    print(f'El contenido de AT de la secuencia es: {get_AT_content(dna_sequence, args.r)}')
+    print(f'El contenido de AT de la secuencia es: {get_AT_content(dna_sequence, args.round)}')
